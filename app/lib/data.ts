@@ -8,7 +8,7 @@ export async function fetchRevenue() {
     await new Promise(resolve => setTimeout(resolve, 3000))
     // console.log('Data fetch completed after 3 seconds.')
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`
+    const data = await sql<Revenue>`SELECT * FROM revenue ORDER BY number`
 
     return data.rows
   } catch (error) {
