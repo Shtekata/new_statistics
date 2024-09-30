@@ -12,11 +12,11 @@ const FormSchema = z.object({
   date: z.string(),
   time: z.string(),
 })
-const CreateInvoice = FormSchema.omit({ id: true, date: true, time: true })
 
-export async function createInvoice(formData: FormData) {
+function validate(formData: FormData) {
+  const ValidateInvoice = FormSchema.omit({ id: true, date: true, time: true })
   //   const rawFormData = Object.fromEntries(formData.entries())
-  const { customerId, amount, status } = CreateInvoice.parse({
+  const { customerId, amount, status } = ValidateInvoice.parse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -24,9 +24,23 @@ export async function createInvoice(formData: FormData) {
   const amountInCents = amount * 100
   const date = new Date().toISOString().split('T')[0]
   const time = new Date().toISOString().split('T')[1]
+  return { customerId, amount, status, amountInCents, date, time }
+}
+
+export async function createInvoice(formData: FormData) {
+  const { customerId, amountInCents, status, date, time } = validate(formData)
 
   await sql`insert into invoices (customer_id, amount, status, date, time)
     values (${customerId}, ${amountInCents}, ${status}, ${date}, ${time})`
+
+  revalidatePath('/dashboard/invoices')
+  redirect('/dashboard/invoices')
+}
+
+export async function updateInvoice(id: string, formData: FormData) {
+  const { customerId, amountInCents, status } = validate(formData)
+
+  await sql`update invoices set customer_id = ${customerId}, amount = ${amountInCents}, status = ${status} where id = ${id}`
 
   revalidatePath('/dashboard/invoices')
   redirect('/dashboard/invoices')
