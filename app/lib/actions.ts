@@ -30,8 +30,12 @@ function validate(formData: FormData) {
 export async function createInvoice(formData: FormData) {
   const { customerId, amountInCents, status, date, time } = validate(formData)
 
-  await sql`insert into invoices (customer_id, amount, status, date, time)
+  try {
+    await sql`insert into invoices (customer_id, amount, status, date, time)
     values (${customerId}, ${amountInCents}, ${status}, ${date}, ${time})`
+  } catch (e) {
+    return { message: 'Database Error: Failed to Create Invoice.' }
+  }
 
   revalidatePath('/dashboard/invoices')
   redirect('/dashboard/invoices')
@@ -40,13 +44,21 @@ export async function createInvoice(formData: FormData) {
 export async function updateInvoice(id: string, formData: FormData) {
   const { customerId, amountInCents, status } = validate(formData)
 
-  await sql`update invoices set customer_id = ${customerId}, amount = ${amountInCents}, status = ${status} where id = ${id}`
+  try {
+    await sql`update invoices set customer_id = ${customerId}, amount = ${amountInCents}, status = ${status} where id = ${id}`
+  } catch (e) {
+    return { message: 'Database Error: Failed to Update Invoice.' }
+  }
 
   revalidatePath('/dashboard/invoices')
   redirect('/dashboard/invoices')
 }
 
 export async function deleteInvoice(id: string) {
-  await sql`delete from invoices where id = ${id}`
+  try {
+    await sql`delete from invoices where id = ${id}`
+  } catch (e) {
+    return { message: 'Database Error: Failed to Delete Invoice.' }
+  }
   revalidatePath('/dashboard/invoices')
 }
