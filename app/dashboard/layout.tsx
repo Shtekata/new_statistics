@@ -1,6 +1,14 @@
 import SideNav from '../ui/dashboard/sidenav'
 export const experimental_ppr = true
 export const runtime = 'nodejs'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Dashboard | MyPerfume',
+    default: 'Dashboard',
+  },
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
