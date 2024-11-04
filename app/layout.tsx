@@ -55,8 +55,8 @@ export const metadata: Metadata = {
   publisher: 'Geshlandia Ltd.',
   generator: 'Next.js',
   keywords: ['Next.js', 'statistics', 'perfumes'],
-  manifest: 'https://myperfume.bg/manifest.json',
   other: { custom: ['fun', 'flavors', 'fantastic'] },
+  // manifest: 'https://myperfume.bg/manifest.json',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
